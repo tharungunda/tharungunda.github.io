@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spin the Wheel</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Winwheel.js/2.7.0/Winwheel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    canvas {
+      margin: 20px auto;
+      display: block;
+    }
+    #spinButton {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #spinButton:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="canvas" width="500" height="500"></canvas>
+  <button id="spinButton">Spin the Wheel</button>
+
+  <script>
+    const items = [
+      { name: "Burger", probability: 1 },
+      { name: "Fries", probability: 1 },
+      { name: "Drink", probability: 1 },
+      { name: "Dessert", probability: 1 },
+      { name: "Pizza Slice", probability: 1 },
+      { name: "Sandwich", probability: 1 },
+      { name: "Premium Steak", probability: 0.01 }, // Highly-priced item
+      { name: "Seafood Platter", probability: 0.01 }, // Highly-priced item
+      { name: "Lobster Roll", probability: 0.01 }, // Highly-priced item
+      { name: "Salad", probability: 1 }
+    ];
+
+    const totalWeight = items.reduce((acc, item) => acc + item.probability, 0);
+    const segments = items.map(item => ({
+      text: item.name,
+      probability: item.probability / totalWeight
+    }));
+
+    const wheel = new Winwheel({
+      numSegments: segments.length,
+      segments: segments.map(segment => ({
+        text: segment.text
+      })),
+      animation: {
+        type: "spinToStop",
+        duration: 5,
+        spins: 8,
+        callbackFinished: (segment) => {
+          alert("You won: " + segment.text);
+          document.getElementById("spinButton").disabled = false;
+        }
+      }
+    });
+
+    const spinButton = document.getElementById("spinButton");
+    spinButton.addEventListener("click", () => {
+      spinButton.disabled = true;
+      const randomDegree = Math.random() * 360;
+      wheel.startAnimation(undefined, randomDegree);
+    });
+  </script>
+</body>
+</html>
