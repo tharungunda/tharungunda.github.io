@@ -1,6 +1,4 @@
 <!DOCTYPE html>
-<script src="Winwheel.min.js"></script>
-<script src="gsap.min.js"></script>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -45,7 +43,6 @@
   <button id="spinButton">Spin the Wheel</button>
 
   <script>
-    // Define the menu items and their probabilities
     const items = [
       { name: "Burger", probability: 1 },
       { name: "Fries", probability: 1 },
@@ -53,27 +50,19 @@
       { name: "Dessert", probability: 1 },
       { name: "Pizza Slice", probability: 1 },
       { name: "Sandwich", probability: 1 },
-      { name: "Premium Steak", probability: 0.01 }, // Rare item
-      { name: "Seafood Platter", probability: 0.01 }, // Rare item
-      { name: "Lobster Roll", probability: 0.01 }, // Rare item
+      { name: "Premium Steak", probability: 0.01 },
+      { name: "Seafood Platter", probability: 0.01 },
+      { name: "Lobster Roll", probability: 0.01 },
       { name: "Salad", probability: 1 }
     ];
 
-    // Calculate the total weight for probabilities
     const totalWeight = items.reduce((acc, item) => acc + item.probability, 0);
 
-    // Convert probabilities to wheel segments
-    const segments = items.map(item => ({
-      text: item.name,
-      size: (item.probability / totalWeight) * 360
-    }));
-
-    // Generate Winwheel segments dynamically
     const wheel = new Winwheel({
       canvasId: "canvas",
-      numSegments: segments.length,
-      segments: segments.map(segment => ({
-        text: segment.text
+      numSegments: items.length,
+      segments: items.map(item => ({
+        text: item.name
       })),
       animation: {
         type: "spinToStop",
@@ -84,10 +73,9 @@
           document.getElementById("spinButton").disabled = false;
         }
       },
-      pointerAngle: 90 // Pointer at the top
+      pointerAngle: 90
     });
 
-    // Spin button logic
     const spinButton = document.getElementById("spinButton");
     spinButton.addEventListener("click", () => {
       spinButton.disabled = true;
