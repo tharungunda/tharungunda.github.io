@@ -1,45 +1,98 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Code Wheel</title>
-    <script src="Winwheel.js"></script>
-  </head>
-  <body>
-    <canvas id="canvas" width="880" height="300">
-      Canvas not supported, use another browser.
-    </canvas>
-    <script>
-      let theWheel = new Winwheel({
-        numSegments: 8, // Number of segments
-        outerRadius: 212, // The size of the wheel.
-        centerX: 217, // Used to position on the background correctly.
-        centerY: 219,
-        textFontSize: 28, // Font size.
-        // Definition of all the segments.
-        segments: [
-          { fillStyle: "#eae56f", text: "Prize 1" },
-          { fillStyle: "#89f26e", text: "Prize 2" },
-          { fillStyle: "#7de6ef", text: "Prize 3" },
-          { fillStyle: "#e7706f", text: "Prize 4" },
-          { fillStyle: "#eae56f", text: "Prize 5" },
-          { fillStyle: "#89f26e", text: "Prize 6" },
-          { fillStyle: "#7de6ef", text: "Prize 7" },
-          { fillStyle: "#e7706f", text: "Prize 8" },
-        ],
-        // Definition of the animation
-        animation: {
-          type: "spinToStop",
-          duration: 5,
-          spins: 8,
-          callbackFinished: alertPrize,
-        },
-      });
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spin the Wheel</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Winwheel.js/2.7.0/Winwheel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    canvas {
+      margin: 20px auto;
+      display: block;
+      border: 2px solid #ddd;
+    }
+    #spinButton {
+      padding: 15px 30px;
+      font-size: 18px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    #spinButton:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+    h1 {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Spin the Wheel and Win a Menu Item!</h1>
+  <canvas id="canvas" width="500" height="500"></canvas>
+  <button id="spinButton">Spin the Wheel</button>
 
-      // Called when the animation has finished.
-      function alertPrize(indicatedSegment) {
-        // Do basic alert of the segment text.
-        alert("You have won " + indicatedSegment.text);
-      }
-    </script>
-  </body>
+  <script>
+    // Define the menu items and their probabilities
+    const items = [
+      { name: "Burger", probability: 1 },
+      { name: "Fries", probability: 1 },
+      { name: "Drink", probability: 1 },
+      { name: "Dessert", probability: 1 },
+      { name: "Pizza Slice", probability: 1 },
+      { name: "Sandwich", probability: 1 },
+      { name: "Premium Steak", probability: 0.01 }, // Rare item
+      { name: "Seafood Platter", probability: 0.01 }, // Rare item
+      { name: "Lobster Roll", probability: 0.01 }, // Rare item
+      { name: "Salad", probability: 1 }
+    ];
+
+    // Calculate the total weight for probabilities
+    const totalWeight = items.reduce((acc, item) => acc + item.probability, 0);
+
+    // Convert probabilities to wheel segments
+    const segments = items.map(item => ({
+      text: item.name,
+      size: (item.probability / totalWeight) * 360
+    }));
+
+    // Generate Winwheel segments dynamically
+    const wheel = new Winwheel({
+      canvasId: "canvas",
+      numSegments: segments.length,
+      segments: segments.map(segment => ({
+        text: segment.text
+      })),
+      animation: {
+        type: "spinToStop",
+        duration: 5,
+        spins: 8,
+        callbackFinished: (segment) => {
+          alert("Congratulations! You won: " + segment.text);
+          document.getElementById("spinButton").disabled = false;
+        }
+      },
+      pointerAngle: 90 // Pointer at the top
+    });
+
+    // Spin button logic
+    const spinButton = document.getElementById("spinButton");
+    spinButton.addEventListener("click", () => {
+      spinButton.disabled = true;
+      const randomSpin = Math.random() * 360; // Random spin angle
+      wheel.animation.stopAngle = randomSpin;
+      wheel.startAnimation();
+    });
+  </script>
+</body>
 </html>
