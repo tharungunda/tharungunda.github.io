@@ -36,16 +36,16 @@
 
   <script>
     const items = [
-      { name: "Burger", probability: 1 },
-      { name: "Fries", probability: 1 },
-      { name: "Drink", probability: 1 },
-      { name: "Dessert", probability: 1 },
-      { name: "Pizza Slice", probability: 1 },
-      { name: "Sandwich", probability: 1 },
-      { name: "Premium Steak", probability: 0 }, // Highly-priced item
-      { name: "Seafood Platter", probability: 0 }, // Highly-priced item
-      { name: "Lobster Roll", probability: 0 }, // Highly-priced item
-      { name: "Salad", probability: 1 }
+      { name: "Burger", probability: 10 },
+      { name: "Fries", probability: 10 },
+      { name: "Drink", probability: 10 },
+      { name: "Dessert", probability: 10 },
+      { name: "Pizza Slice", probability: 10 },
+      { name: "Sandwich", probability: 10 },
+      { name: "Premium Steak", probability: 0.00000000001 }, // Highly-priced item
+      { name: "Seafood Platter", probability: 0.00000000001 }, // Highly-priced item
+      { name: "Lobster Roll", probability: 0.00000000001 }, // Highly-priced item
+      { name: "Salad", probability: 10 }
     ];
 
     const totalWeight = items.reduce((acc, item) => acc + item.probability, 0);
@@ -61,8 +61,8 @@
       })),
       animation: {
         type: "spinToStop",
-        duration: 50,
-        spins: 8,
+        duration: 15,
+        spins: 20,
         callbackFinished: (segment) => {
           alert("You won: " + segment.text);
           document.getElementById("spinButton").disabled = false;
