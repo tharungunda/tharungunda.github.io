@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <script src="Winwheel.min.js"></script>
-<script src="gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Winwheel.js/2.7.0/Winwheel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -9,38 +10,27 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Winwheel.js/2.7.0/Winwheel.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-    }
     canvas {
       margin: 20px auto;
       display: block;
-      border: 2px solid #ddd;
     }
     #spinButton {
-      padding: 15px 30px;
-      font-size: 18px;
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
       background-color: #4CAF50;
       color: white;
       border: none;
       cursor: pointer;
-      border-radius: 5px;
+      font-size: 16px;
     }
     #spinButton:disabled {
       background-color: #ccc;
       cursor: not-allowed;
     }
-    h1 {
-      color: #333;
-    }
   </style>
 </head>
 <body>
-  <h1>Spin the Wheel and Win a Menu Item!</h1>
   <canvas id="canvas" width="500" height="500"></canvas>
   <button id="spinButton">Spin the Wheel</button>
 
@@ -52,38 +42,39 @@
       { name: "Dessert", probability: 1 },
       { name: "Pizza Slice", probability: 1 },
       { name: "Sandwich", probability: 1 },
-      { name: "Premium Steak", probability: 0.01 },
-      { name: "Seafood Platter", probability: 0.01 },
-      { name: "Lobster Roll", probability: 0.01 },
+      { name: "Premium Steak", probability: 0.01 }, // Highly-priced item
+      { name: "Seafood Platter", probability: 0.01 }, // Highly-priced item
+      { name: "Lobster Roll", probability: 0.01 }, // Highly-priced item
       { name: "Salad", probability: 1 }
     ];
 
     const totalWeight = items.reduce((acc, item) => acc + item.probability, 0);
+    const segments = items.map(item => ({
+      text: item.name,
+      probability: item.probability / totalWeight
+    }));
 
     const wheel = new Winwheel({
-      canvasId: "canvas",
-      numSegments: items.length,
-      segments: items.map(item => ({
-        text: item.name
+      numSegments: segments.length,
+      segments: segments.map(segment => ({
+        text: segment.text
       })),
       animation: {
         type: "spinToStop",
         duration: 5,
         spins: 8,
         callbackFinished: (segment) => {
-          alert("Congratulations! You won: " + segment.text);
+          alert("You won: " + segment.text);
           document.getElementById("spinButton").disabled = false;
         }
-      },
-      pointerAngle: 90
+      }
     });
 
     const spinButton = document.getElementById("spinButton");
     spinButton.addEventListener("click", () => {
       spinButton.disabled = true;
-      const randomSpin = Math.random() * 360; // Random spin angle
-      wheel.animation.stopAngle = randomSpin;
-      wheel.startAnimation();
+      const randomDegree = Math.random() * 360;
+      wheel.startAnimation(undefined, randomDegree);
     });
   </script>
 </body>
