@@ -42,29 +42,39 @@
       { name: "Dessert", probability: 10 },
       { name: "Pizza Slice", probability: 10 },
       { name: "Sandwich", probability: 10 },
-      { name: "Momos", probability: 0.00000000001 }, // Highly-priced item
-      { name: "Pasta", probability: 0.00000000001 }, // Highly-priced item
-      { name: "Nuggets", probability: 0.00000000001 }, // Highly-priced item
+      { name: "Momos", probability: 0 }, // Never selected
+      { name: "Pasta", probability: 0 }, // Never selected
+      { name: "Nuggets", probability: 0 }, // Never selected
       { name: "Salad", probability: 10 }
     ];
 
-    const totalWeight = items.reduce((acc, item) => acc + item.probability, 0);
+    // Calculate total weight (excluding zero-probability items)
+    const totalWeight = items.reduce((acc, item) => acc + (item.probability > 0 ? item.probability : 0), 0);
+
+    // Map segments with text for the wheel
     const segments = items.map(item => ({
       text: item.name,
       probability: item.probability / totalWeight
     }));
 
+    // Create the wheel
     const wheel = new Winwheel({
+      canvasId: "canvas",
       numSegments: segments.length,
       segments: segments.map(segment => ({
         text: segment.text
       })),
       animation: {
         type: "spinToStop",
-        duration: 15,
-        spins: 20,
+        duration: 5,
+        spins: 8,
         callbackFinished: (segment) => {
-          alert("You won: " + segment.text);
+          // Ensure the segment is valid (non-zero probability)
+          if (items.find(item => item.name === segment.text && item.probability > 0)) {
+            alert("You won: " + segment.text);
+          } else {
+            alert("Spin again! No prize this time.");
+          }
           document.getElementById("spinButton").disabled = false;
         }
       }
